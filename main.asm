@@ -1,6 +1,7 @@
 	.globl main
 	
 	.include "syscalls.asm"
+	.include "complex.asm"
 	
 	.data
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
