@@ -72,27 +72,26 @@ close_source_file:
 	li	a7, CLOSE
 	ecall
 
-do_stuff_with_table: # in this example: darken every pixel by factor of 2
+padding:
 	# padding: t5 = (4 - (width % 4)) % 4
 	li	t4, 4
 	remu	t5, s1, t4
 	sub	t5, t4, t5
 	remu	t5, t5, t4
-	
+
+start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
-	li	t2, 2
+
 loop:
 	bge	t0, t6, end_loop
 	lbu	t1, (t0)
-	divu	t1, t1, t2
+	
 	sb	t1, (t0)
 	addi	t0, t0, 1
-	b	loop
-	
-# transorfmation done
+	b	loop	
+
 end_loop:
-	print_str ("table operation done\n")
 
 # save image
 open_dest_file:
