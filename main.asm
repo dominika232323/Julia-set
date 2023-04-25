@@ -2,14 +2,20 @@
 	
 	.include "syscalls.asm"
 	.include "bmp_data.asm"
+	.include "complex.asm"
 	
 	.data
+	
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
 output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena_Julia_set.bmp"
+hello:	.asciz	"Welcome to Julia set generator"
 error:	.asciz	"\nCould not open file\n"
 	.text
 
 main:
+	li	a7, INSTR
+	la 	a0, hello
+	ecall	
 
 open_bmp_file:
 	la	a0, input
@@ -25,17 +31,17 @@ open_bmp_file:
 read_headers:
 	mv	a0, s0
 	la	a1, BitMapFileHeader
-	li	a2, FHSIZE
+	li	a2, FileHeaderSIZE
 	li	a7, READ
 	ecall
 
-	# this is stupid, but fixes allignment problems
+	# this is stupid, but fixes alignment problems
 	la	t0, headerbreak
 	sh	zero, (t0)
 	
-	mv	a0, s0			# get info header
+	mv	a0, s0
 	la	a1, BitMapInfoHeader
-	li	a2, IHSIZE
+	li	a2, InfoHeaderSIZE
 	li	a7, READ
 	ecall
 
@@ -46,17 +52,18 @@ get_dims:
 	lw	s3, biTableSizeStart(t0)	# s3 = full size in bytes
 
 create_table:
+	# let's pretend sbrk always works
 	mv	a0, s3
 	li	a7, SBRK
 	ecall
-	# let's pretend sbrk always works
+	
 	mv	s5, a0		# s5 = table pointer
 
 copy_table:
 	# read all bitMap table into buffer at once
-	mv	a0, s0
-	mv	a1, s5
-	mv	a2, s3
+	mv	a0, s0				# s0 - file descriptor
+	mv	a1, s5				# s5 - table pointer
+	mv	a2, s3				# s3 - full size in bytes
 	li	a7, READ
 	ecall
 	
@@ -64,8 +71,6 @@ close_source_file:
 	mv	a0, s0
 	li	a7, CLOSE
 	ecall
-	
-	print_str ("pixel array in memory\n")
 
 do_stuff_with_table: # in this example: darken every pixel by factor of 2
 	# padding: t5 = (4 - (width % 4)) % 4
@@ -91,22 +96,23 @@ end_loop:
 
 # save image
 open_dest_file:
-	la	a0, fout
-	li	a1, 1	# write-only
+	la	a0, output
+	li	a1, 1		# write-only
 	li	a7, OPEN
 	ecall
+	
 	mv	s0, a0
 
 write_headers:
 	mv	a0, s0
 	la	a1, BitMapFileHeader
-	li	a2, FHSIZE
+	li	a2, FileHeaderSIZE
 	li	a7, WRITE
 	ecall
 
 	mv	a0, s0
 	la	a1, BitMapInfoHeader
-	li	a2, IHSIZE
+	li	a2, InfoHeaderSIZE
 	li	a7, WRITE
 	ecall
 
