@@ -14,3 +14,6 @@
 # exit
 	.eqv	EXIT 10
 	.eqv	ERROR 93
+
+# others
+	.eqv	HEAP  9
