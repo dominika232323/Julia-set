@@ -15,5 +15,5 @@
 	.eqv	EXIT 10
 	.eqv	ERROR 93
 
-# others
+# allocating heap memory
 	.eqv	HEAP  9

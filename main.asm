@@ -7,7 +7,7 @@
 	.data
 	
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena_Julia_set.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
 hello:	.asciz	"Welcome to Julia set generator"
 error:	.asciz	"\nCould not open file\n"
 	.text
@@ -54,7 +54,7 @@ get_dims:
 create_table:
 	# let's pretend sbrk always works
 	mv	a0, s3
-	li	a7, SBRK
+	li	a7, HEAP
 	ecall
 	
 	mv	s5, a0		# s5 = table pointer
