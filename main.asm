@@ -67,8 +67,8 @@ read_headers:
 	ecall
 
 	# this is stupid, but fixes alignment problems
-	la	t0, headerbreak
-	sh	zero, (t0)
+	#la	t0, headerbreak
+	#sh	zero, (t0)
 	
 	mv	a0, s0
 	la	a1, BitMapInfoHeader
@@ -83,18 +83,17 @@ get_dims:
 	lw	s3, biTableSizeStart(t0)	# s3 = full size in bytes
 
 create_table:
-	# let's pretend sbrk always works
 	mv	a0, s3
 	li	a7, HEAP
 	ecall
 	
-	mv	s5, a0		# s5 = table pointer
+	mv	s5, a0				# s5 = table pointer
 
 copy_table:
 	# read all bitMap table into buffer at once
-	mv	a0, s0				# s0 - file descriptor
-	mv	a1, s5				# s5 - table pointer
-	mv	a2, s3				# s3 - full size in bytes
+	mv	a0, s0				# s0 = file descriptor
+	mv	a1, s5				# s5 = table pointer
+	mv	a2, s3				# s3 = full size in bytes
 	li	a7, READ
 	ecall
 	
