@@ -40,48 +40,14 @@ loop:
 	b	loop	
 
 end_loop:
+	jal open_dest_file
 
-# save image
-open_dest_file:
-	la	a0, output
-	li	a1, 1		# write-only
-	li	a7, OPEN
-	ecall
-	
-	mv	s0, a0
-
-write_headers:
-	mv	a0, s0
-	la	a1, BitMapFileHeader
-	li	a2, FileHeaderSIZE
-	li	a7, WRITE
-	ecall
-
-	mv	a0, s0
-	la	a1, BitMapInfoHeader
-	li	a2, InfoHeaderSIZE
-	li	a7, WRITE
-	ecall
-
-write_table:
-	mv	a0, s0
-	mv	a1, s5
-	mv	a2, s3
-	li	a7, WRITE
-	ecall
-
-close_dest_file:
-	mv	a0, s0
-	li	a7, CLOSE
-	ecall
-	
 exit:
 	li	a7, EXIT
 	ecall
 
 
-
-##### open_bmp_file function
+##### read bmp file function
 open_bmp_file:
 	la	a0, input
 	mv	a1, zero	# read only mode
@@ -145,6 +111,43 @@ open_bmp_error:
 	ecall
 	
 	li	a7, ERROR
+	ecall
+	
+	ret
+
+
+##### write to bmp file function
+open_dest_file:
+	la	a0, output
+	li	a1, 1		# write-only
+	li	a7, OPEN
+	ecall
+	
+	mv	s0, a0
+
+write_headers:
+	mv	a0, s0
+	la	a1, BitMapFileHeader
+	li	a2, FileHeaderSIZE
+	li	a7, WRITE
+	ecall
+
+	mv	a0, s0
+	la	a1, BitMapInfoHeader
+	li	a2, InfoHeaderSIZE
+	li	a7, WRITE
+	ecall
+
+write_table:
+	mv	a0, s0
+	mv	a1, s5
+	mv	a2, s3
+	li	a7, WRITE
+	ecall
+
+close_dest_file:
+	mv	a0, s0
+	li	a7, CLOSE
 	ecall
 	
 	ret
