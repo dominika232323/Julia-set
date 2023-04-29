@@ -16,61 +16,9 @@ main:
 	li	a7, INSTR
 	la 	a0, hello
 	ecall	
-
-open_bmp_file:
-	la	a0, input
-	mv	a1, zero	# read only mode
-	li 	a7, OPEN
-	ecall
 	
-	li	t0, -1
-	beq	a0, t0, open_bmp_error
+	jal open_bmp_file
 
-	mv	s0, a0		# save the file descriptor
-
-read_headers:
-	mv	a0, s0
-	la	a1, BitMapFileHeader
-	li	a2, FileHeaderSIZE
-	li	a7, READ
-	ecall
-
-	# this is stupid, but fixes alignment problems
-	la	t0, headerbreak
-	sh	zero, (t0)
-	
-	mv	a0, s0
-	la	a1, BitMapInfoHeader
-	li	a2, InfoHeaderSIZE
-	li	a7, READ
-	ecall
-
-get_dims:
-	la	t0, BitMapInfoHeader
-	lw 	s1, biWidthStart(t0)		# s1 = width
-	lw	s2, biHeightStart(t0)		# s2 = height
-	lw	s3, biTableSizeStart(t0)	# s3 = full size in bytes
-
-create_table:
-	# let's pretend sbrk always works
-	mv	a0, s3
-	li	a7, HEAP
-	ecall
-	
-	mv	s5, a0		# s5 = table pointer
-
-copy_table:
-	# read all bitMap table into buffer at once
-	mv	a0, s0				# s0 - file descriptor
-	mv	a1, s5				# s5 - table pointer
-	mv	a2, s3				# s3 - full size in bytes
-	li	a7, READ
-	ecall
-	
-close_source_file:
-	mv	a0, s0
-	li	a7, CLOSE
-	ecall
 
 padding:
 	# padding: t5 = (4 - (width % 4)) % 4
@@ -131,6 +79,66 @@ exit:
 	li	a7, EXIT
 	ecall
 
+
+
+##### open_bmp_file function
+open_bmp_file:
+	la	a0, input
+	mv	a1, zero	# read only mode
+	li 	a7, OPEN
+	ecall
+	
+	li	t0, -1
+	beq	a0, t0, open_bmp_error
+
+	mv	s0, a0		# save the file descriptor
+
+read_headers:
+	mv	a0, s0
+	la	a1, BitMapFileHeader
+	li	a2, FileHeaderSIZE
+	li	a7, READ
+	ecall
+
+	# this is stupid, but fixes alignment problems
+	la	t0, headerbreak
+	sh	zero, (t0)
+	
+	mv	a0, s0
+	la	a1, BitMapInfoHeader
+	li	a2, InfoHeaderSIZE
+	li	a7, READ
+	ecall
+
+get_dims:
+	la	t0, BitMapInfoHeader
+	lw 	s1, biWidthStart(t0)		# s1 = width
+	lw	s2, biHeightStart(t0)		# s2 = height
+	lw	s3, biTableSizeStart(t0)	# s3 = full size in bytes
+
+create_table:
+	# let's pretend sbrk always works
+	mv	a0, s3
+	li	a7, HEAP
+	ecall
+	
+	mv	s5, a0		# s5 = table pointer
+
+copy_table:
+	# read all bitMap table into buffer at once
+	mv	a0, s0				# s0 - file descriptor
+	mv	a1, s5				# s5 - table pointer
+	mv	a2, s3				# s3 - full size in bytes
+	li	a7, READ
+	ecall
+	
+close_source_file:
+	mv	a0, s0
+	li	a7, CLOSE
+	ecall
+
+	ret
+
 open_bmp_error:
 	li	a7, INSTR
 	la 	a0, error
@@ -138,3 +146,5 @@ open_bmp_error:
 	
 	li	a7, ERROR
 	ecall
+	
+	ret
