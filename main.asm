@@ -10,6 +10,7 @@ input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena
 output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
 hello:	.asciz	"Welcome to Julia set generator"
 error:	.asciz	"\nCould not open file\n"
+
 	.text
 
 main:
@@ -150,3 +151,6 @@ close_dest_file:
 	ecall
 	
 	ret
+	
+
+##### padding
