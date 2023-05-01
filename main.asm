@@ -20,7 +20,7 @@ main:
 	ecall	
 	
 	jal open_bmp_file
-
+	jal start_table_iterator
 	jal open_dest_file
 
 	li	a7, INSTR
@@ -31,20 +31,7 @@ main:
 	ecall
 
 
-##### mandelbrot generator
-start_table_iterator:
-	mv	t0, s5		# t0 = start -> iterator
-	add	t6, s5, s3	# t6 = start + size -> end
 
-loop:
-	bge	t0, t6, end_loop
-	lbu	t1, (t0)
-	
-	sb	t1, (t0)
-	addi	t0, t0, 1
-	b	loop	
-
-end_loop:
 
 
 ##### read bmp file function
@@ -76,6 +63,7 @@ get_dims:
 	la	t0, BitMapInfoHeader
 	lw 	s1, biWidthStart(t0)		# s1 = width
 	lw	s2, biHeightStart(t0)		# s2 = height
+#	lw	s4, biPixelStart(t0)		# s4 = pixel data
 	lw	s3, biTableSizeStart(t0)	# s3 = full size in bytes
 
 create_table:
@@ -108,6 +96,36 @@ open_bmp_error:
 	li	a7, ERROR
 	ecall
 	
+	ret
+
+
+##### mandelbrot generator
+start_table_iterator:
+	mv	t0, s5		# t0 = start -> iterator
+	add	t6, s5, s3	# t6 = start + size -> end
+
+loop:
+	bge	t0, t6, end_loop
+	lbu	t1, (t0)
+	
+	lb	t2, 0(t0)
+	lb	t3, 1(t0)
+	lb	t4, 2(t0)
+		
+	li t2, 100        # Set the red component to maximum value
+	li t3, 255          # Set the green component to minimum value
+	li t4, 0          # Set the blue component to minimum value
+	
+	# Save the modified BMP file back to disk
+	sb t2, 0(t0)      # Store the red component of the pixel
+	sb t3, 1(t0)      # Store the green component of the pixel
+	sb t4, 2(t0)      # Store the blue component of the pixel
+	
+	sb	t1, (t0)
+	addi	t0, t0, 1
+	b	loop	
+
+end_loop:
 	ret
 
 
