@@ -21,6 +21,17 @@ main:
 	
 	jal open_bmp_file
 
+	jal open_dest_file
+
+	li	a7, INSTR
+	la 	a0, bye
+	ecall
+	
+	li	a7, EXIT
+	ecall
+
+
+##### mandelbrot generator
 start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
@@ -34,15 +45,6 @@ loop:
 	b	loop	
 
 end_loop:
-	jal open_dest_file
-
-exit:
-	li	a7, INSTR
-	la 	a0, bye
-	ecall
-	
-	li	a7, EXIT
-	ecall
 
 
 ##### read bmp file function
