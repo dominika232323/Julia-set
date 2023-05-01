@@ -8,8 +8,8 @@
 	
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
 output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
-hello:	.asciz	"Welcome to Mandelbrot set generator"
-bye:	.asciz	"Mandelbrot set was generated. Have a good day!"
+hello:	.asciz	"Welcome to Mandelbrot set generator!"
+bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
 	.text
