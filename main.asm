@@ -63,7 +63,6 @@ get_dims:
 	la	t0, BitMapInfoHeader
 	lw 	s1, biWidthStart(t0)		# s1 = width
 	lw	s2, biHeightStart(t0)		# s2 = height
-#	lw	s4, biPixelStart(t0)		# s4 = pixel data
 	lw	s3, biTableSizeStart(t0)	# s3 = full size in bytes
 
 create_table:
