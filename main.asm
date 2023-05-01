@@ -105,15 +105,15 @@ start_table_iterator:
 
 loop:
 	bge	t0, t6, end_loop
-	lbu	t1, (t0)
+#	lbu	t1, (t0)
 	
-	lb	t2, 0(t0)
-	lb	t3, 1(t0)
-	lb	t4, 2(t0)
-		
-	li t2, 0x9A        # Set the red component to maximum value
-	li t3, 0xFF          # Set the green component to minimum value
-	li t4, 0x0          # Set the blue component to minimum value
+	lbu	t2, 0(t0)
+	lbu	t3, 1(t0)
+	lbu	t4, 2(t0)
+
+#	li t2, 0x9A        # Set the red component to maximum value
+#	li t3, 0xFF          # Set the green component to minimum value
+#	li t4, 0x00          # Set the blue component to minimum value
 	
 	# Save the modified BMP file back to disk
 	sb t2, 0(t0)      # Store the red component of the pixel
