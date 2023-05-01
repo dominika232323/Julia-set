@@ -8,7 +8,8 @@
 	
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
 output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
-hello:	.asciz	"Welcome to Julia set generator"
+hello:	.asciz	"Welcome to Mandelbrot set generator"
+bye:	.asciz	"Mandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
 	.text
@@ -36,6 +37,10 @@ end_loop:
 	jal open_dest_file
 
 exit:
+	li	a7, INSTR
+	la 	a0, bye
+	ecall
+	
 	li	a7, EXIT
 	ecall
 
