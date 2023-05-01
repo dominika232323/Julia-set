@@ -63,10 +63,6 @@ read_headers:
 	li	a2, FileHeaderSIZE
 	li	a7, READ
 	ecall
-
-	# this is stupid, but fixes alignment problems
-	#la	t0, headerbreak
-	#sh	zero, (t0)
 	
 	mv	a0, s0
 	la	a1, BitMapInfoHeader
@@ -148,12 +144,3 @@ close_dest_file:
 	ecall
 	
 	ret
-	
-
-##### padding
-padding:
-	# padding: t5 = (4 - (width % 4)) % 4
-	li	t4, 4
-	remu	t5, s1, t4
-	sub	t5, t4, t5
-	remu	t5, t5, t4
