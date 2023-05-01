@@ -35,16 +35,62 @@ main:
 start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
-
-loop:
+	
+	li	t2, 0
+loop_width:
 	bge	t0, t6, end_loop
 	lbu	t1, (t0)
+	
+	li	t3, 0
+loop_height:
+	# complex number real part = (RE_START + (x / WIDTH) * (RE_END - RE_START)
+	div	s6, t2, s1
+	li	s8, RE_START
+	add	s6, s6, s8
+	li	s9, RE_END
+	sub	s9, s9, s8
+	mul	s6, s6, s9	# s6 = complex number real part
+
+	# complex number imaginary part = IM_START + (y / HEIGHT) * (IM_END - IM_START))
+	div	s7, t3, s2
+	li	s8, IM_START
+	add	s7, s7, s8
+	li	s9, IM_END
+	sub	s9, s9, s8
+	mul	s7, s7, s9	# s7 = complex number imaginary part
+	
+	beq	t3, s2, next_width
+	addi	t3, t3, 1
+	b	loop_height
+
+next_width:
+	addi	t2, t2, 1
+	b	loop_width
+	
 	
 	sb	t1, (t0)
 	addi	t0, t0, 1
 	b	loop	
 
 end_loop:
+	ret
+
+
+##### mandlebrot
+mandelbrot:
+	li	s8, 0		# s8 = z real part
+	li	s9, 0		# s9 = z imaginary part
+	li	s10, 0		# s10 = n
+	li	s11, MAX_ITER
+
+
+	
+
+end_loop:
+	ret
+
+	
+##### absolute value of a complex number	
 
 
 ##### read bmp file function
