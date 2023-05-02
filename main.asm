@@ -59,6 +59,8 @@ loop_height:
 	sub	s9, s9, s8
 	mul	s7, s7, s9	# s7 = complex number imaginary part
 	
+	jal	mandelbrot
+	
 	beq	t3, s2, next_width
 	addi	t3, t3, 1
 	b	loop_height
@@ -82,15 +84,45 @@ mandelbrot:
 	li	s9, 0		# s9 = z imaginary part
 	li	s10, 0		# s10 = n
 	li	s11, MAX_ITER
-
-
 	
+mloop:
+	jal	abs
+	li	t4, 2	
+	bgt	s4, t4, end_mloop
+	li	t4, MAX_ITER
+	bge	s4, t4, end_mloop
+	
+	# z = z*z + c
+	# s8 = s8^2 - s9^2
+	mul	t4, s8, s8
+	mul	t5, s9, s9
+	sub	s8, t4, t5
 
-end_loop:
+	# s9 = 2 * s8 * s9
+	li	t4, 2
+	mul	s9, s9, t4
+	mul	s9, s9, s8
+	
+	# n += 1
+	addi	s10, s10, 1
+	b mloop	
+
+end_mloop:
 	ret
 
 	
-##### absolute value of a complex number	
+##### absolute value of a complex number
+abs:
+	mv	a1, s8
+	mv	a2, s9
+	
+	mul	a1, a1, a1
+	mul	a2, a2, a2
+	add	a3, a1, a2
+	
+	# s4 = square root
+	ret
+		
 
 
 ##### read bmp file function
