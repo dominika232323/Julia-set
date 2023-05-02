@@ -108,17 +108,23 @@ loop:
 #	lbu	t1, (t0)
 	
 	lbu	t2, 0(t0)
-	lbu	t3, 1(t0)
-	lbu	t4, 2(t0)
+#	lbu	t3, 1(t0)
+#	lbu	t4, 2(t0)
 
-#	li t2, 0x9A        # Set the red component to maximum value
-#	li t3, 0xFF          # Set the green component to minimum value
-#	li t4, 0x00          # Set the blue component to minimum value
+	li t2, 0x9A        # Set the red component
+	li t3, 0xFF          # Set the green component
+	li t4, 0x00          # Set the blue component
 	
 	# Save the modified BMP file back to disk
 	sb t2, 0(t0)      # Store the red component of the pixel
-	sb t3, 1(t0)      # Store the green component of the pixel
-	sb t4, 2(t0)      # Store the blue component of the pixel
+#	sb t3, 1(t0)      # Store the green component of the pixel
+#	sb t4, 2(t0)      # Store the blue component of the pixel
+
+	addi	t0, t0, 1
+	sb	t3, 0(t0)
+	
+	addi	t0, t0, 1
+	sb	t4, 0(t0)
 	
 	#sb	t1, (t0)
 	addi	t0, t0, 1
