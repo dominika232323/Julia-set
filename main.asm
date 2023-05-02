@@ -8,9 +8,10 @@
 	
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
 output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
-hello:	.asciz	"Welcome to Mandelbrot set generator!"
+hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
+stored:	.asciz	"\nStored\n"
 
 	.text
 
@@ -137,6 +138,7 @@ loop_height:
 	li	s9, 255
 
 store:
+	bge	t0, t6, end_loop
 	# store blue
 	sb	s9, 0(t0)
 	# store green
@@ -147,6 +149,10 @@ store:
 	sb	s8, 0(t0)
 
 	addi	t0, t0, 1
+	
+	li	a7, INSTR
+	la 	a0, stored
+	ecall
 	
 	beq	t3, s2, next_width
 	addi	t3, t3, 1
