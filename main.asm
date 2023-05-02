@@ -103,13 +103,12 @@ start_table_iterator:
 	
 	li	t2, 0
 loop_width:
-	lbu	t1, (t0)
-	beq	t2, s1, end_loop
-	bge	t1, t6, end_loop
+	bge	t2, s1, end_loop
+	bge	t0, t6, end_loop
 	
 	li	t3, 0
 loop_height:
-	bge	t1, t6, end_loop
+	bge	t0, t6, end_loop
 	
 	# complex number real part = (RE_START + (x / WIDTH) * (RE_END - RE_START)
 	div	s6, t2, s1
@@ -139,15 +138,17 @@ loop_height:
 	li	s9, 255
 
 store:
-	bge	t1, t6, end_loop
+	bge	t0, t6, end_loop
 	# store blue
-	sb	s9, 0(t0)
+	sb	s9, (t0)
 	# store green
 	addi	t0, t0, 1
-	sb	t4, 0(t0)
+	bge	t0, t6, end_loop
+	sb	t4, (t0)
 	# store red
 	addi	t0, t0, 1
-	sb	s8, 0(t0)
+	bge	t0, t6, end_loop
+	sb	s8, (t0)
 
 	addi	t0, t0, 1
 	
