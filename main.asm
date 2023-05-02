@@ -61,21 +61,35 @@ loop_height:
 	
 	jal	mandelbrot
 	
+	# hue = int(255 * m / MAX_ITER)
+	li	t4, 255
+	mul	s8, s10, t4
+	div	s8, s11		# s8 = hue
+	
+	# value = 255 if m < MAX_ITER else 0
+	bge	s10, s11, val_zero
+	li	s9, 255
+
+store:
+	sb	s8, 0(t0)
+	sb	t4, 1(t0)
+	sb	s9, 2(t0)
+	addi	t0, t0, 1
+	
 	beq	t3, s2, next_width
 	addi	t3, t3, 1
 	b	loop_height
 
 next_width:
 	addi	t2, t2, 1
-	b	loop_width
-	
-	
-	sb	t1, (t0)
-	addi	t0, t0, 1
-	b	loop	
+	b	loop_width	
 
 end_loop:
 	ret
+
+val_zero:
+	li	s9, 0
+	b	store
 
 
 ##### mandlebrot
@@ -93,15 +107,18 @@ mloop:
 	bge	s4, t4, end_mloop
 	
 	# z = z*z + c
-	# s8 = s8^2 - s9^2
-	mul	t4, s8, s8
+	# s8 = s8^2 - s9^2 + s6
+	mv	t4, s8		# save s8 for counting new s9
+	mul	s8, s8, s8
 	mul	t5, s9, s9
-	sub	s8, t4, t5
+	sub	s8, s8, t5
+	add	s8, s8, s6
 
-	# s9 = 2 * s8 * s9
-	li	t4, 2
+	# s9 = 2 * s8 * s9 + s7
+	li	t5, 2
+	mul	s9, s9, t5
 	mul	s9, s9, t4
-	mul	s9, s9, s8
+	add	s9, s9, s7
 	
 	# n += 1
 	addi	s10, s10, 1
