@@ -11,7 +11,6 @@ output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/smal
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
-stored:	.asciz	"\nStored\n"
 
 	.text
 
@@ -22,7 +21,7 @@ main:
 	
 	jal	open_bmp_file
 
-##### mandelbrot generator
+##### mandelbrot set generator
 start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
@@ -77,10 +76,6 @@ store:
 	sb	s8, (t0)
 
 	addi	t0, t0, 1
-	
-	li	a7, INSTR
-	la 	a0, stored
-	ecall
 	
 	beq	t3, s2, next_width
 	addi	t3, t3, 1
@@ -167,9 +162,6 @@ open_bmp_error:
 	ecall
 	
 	ret
-
-
-
 
 
 ##### mandlebrot
