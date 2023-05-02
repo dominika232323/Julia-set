@@ -19,9 +19,9 @@ main:
 	la 	a0, hello
 	ecall	
 	
-	jal open_bmp_file
-
-	jal open_dest_file
+	jal	open_bmp_file
+	jal	start_table_iterator
+	jal 	open_dest_file
 
 	li	a7, INSTR
 	la 	a0, bye
@@ -64,7 +64,7 @@ loop_height:
 	# hue = int(255 * m / MAX_ITER)
 	li	t4, 255
 	mul	s8, s10, t4
-	div	s8, s11		# s8 = hue
+	div	s8, s8, s11		# s8 = hue
 	
 	# value = 255 if m < MAX_ITER else 0
 	bge	s10, s11, val_zero
