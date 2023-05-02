@@ -31,117 +31,6 @@ main:
 	ecall
 
 
-##### mandelbrot generator
-start_table_iterator:
-	mv	t0, s5		# t0 = start -> iterator
-	add	t6, s5, s3	# t6 = start + size -> end
-	
-	li	t2, 0
-loop_width:
-	bge	t0, t6, end_loop
-	lbu	t1, (t0)
-	
-	li	t3, 0
-loop_height:
-	# complex number real part = (RE_START + (x / WIDTH) * (RE_END - RE_START)
-	div	s6, t2, s1
-	li	s8, RE_START
-	add	s6, s6, s8
-	li	s9, RE_END
-	sub	s9, s9, s8
-	mul	s6, s6, s9	# s6 = complex number real part
-
-	# complex number imaginary part = IM_START + (y / HEIGHT) * (IM_END - IM_START))
-	div	s7, t3, s2
-	li	s8, IM_START
-	add	s7, s7, s8
-	li	s9, IM_END
-	sub	s9, s9, s8
-	mul	s7, s7, s9	# s7 = complex number imaginary part
-	
-	jal	mandelbrot
-	
-	# hue = int(255 * m / MAX_ITER)
-	li	t4, 255
-	mul	s8, s10, t4
-	div	s8, s8, s11		# s8 = hue
-	
-	# value = 255 if m < MAX_ITER else 0
-	bge	s10, s11, val_zero
-	li	s9, 255
-
-store:
-	sb	s8, 0(t0)
-	sb	t4, 1(t0)
-	sb	s9, 2(t0)
-	addi	t0, t0, 1
-	
-	beq	t3, s2, next_width
-	addi	t3, t3, 1
-	b	loop_height
-
-next_width:
-	addi	t2, t2, 1
-	b	loop_width	
-
-end_loop:
-	ret
-
-val_zero:
-	li	s9, 0
-	b	store
-
-
-##### mandlebrot
-mandelbrot:
-	li	s8, 0		# s8 = z real part
-	li	s9, 0		# s9 = z imaginary part
-	li	s10, 0		# s10 = n
-	li	s11, MAX_ITER
-	
-mloop:
-	jal	abs
-	li	t4, 2	
-	bgt	s4, t4, end_mloop
-	li	t4, MAX_ITER
-	bge	s4, t4, end_mloop
-	
-	# z = z*z + c
-	# s8 = s8^2 - s9^2 + s6
-	mv	t4, s8		# save s8 for counting new s9
-	mul	s8, s8, s8
-	mul	t5, s9, s9
-	sub	s8, s8, t5
-	add	s8, s8, s6
-
-	# s9 = 2 * s8 * s9 + s7
-	li	t5, 2
-	mul	s9, s9, t5
-	mul	s9, s9, t4
-	add	s9, s9, s7
-	
-	# n += 1
-	addi	s10, s10, 1
-	b mloop	
-
-end_mloop:
-	ret
-
-	
-##### absolute value of a complex number
-abs:
-	mv	a1, s8
-	mv	a2, s9
-	
-	mul	a1, a1, a1
-	mul	a2, a2, a2
-	add	a3, a1, a2
-	
-	# s4 = square root
-	ret
-		
-
-
 ##### read bmp file function
 open_bmp_file:
 	la	a0, input
@@ -203,6 +92,118 @@ open_bmp_error:
 	li	a7, ERROR
 	ecall
 	
+	ret
+
+
+##### mandelbrot generator
+start_table_iterator:
+	mv	t0, s5		# t0 = start -> iterator
+	add	t6, s5, s3	# t6 = start + size -> end
+	
+	li	t2, 0
+loop_width:
+	beq	t2, s1, end_loop
+	bge	t0, t6, end_loop
+	
+	li	t3, 0
+loop_height:
+	bge	t0, t6, end_loop
+	
+	# complex number real part = (RE_START + (x / WIDTH) * (RE_END - RE_START)
+	div	s6, t2, s1
+	li	s8, RE_START
+	add	s6, s6, s8
+	li	s9, RE_END
+	sub	s9, s9, s8
+	mul	s6, s6, s9	# s6 = complex number real part
+
+	# complex number imaginary part = IM_START + (y / HEIGHT) * (IM_END - IM_START))
+	div	s7, t3, s2
+	li	s8, IM_START
+	add	s7, s7, s8
+	li	s9, IM_END
+	sub	s9, s9, s8
+	mul	s7, s7, s9	# s7 = complex number imaginary part
+	
+	jal	mandelbrot
+	
+	# hue = int(255 * m / MAX_ITER)
+	li	t4, 255
+	mul	s8, s10, t4
+	div	s8, s8, s11		# s8 = hue
+	
+	# value = 255 if m < MAX_ITER else 0
+	bge	s10, s11, val_zero
+	li	s9, 255
+
+store:
+	# store blue
+	sb	s9, 0(t0)
+	# store green
+	addi	t0, t0, 1
+	sb	t4, 0(t0)
+	# store red
+	addi	t0, t0, 1
+	sb	s8, 0(t0)
+
+	addi	t0, t0, 1
+	
+	beq	t3, s2, next_width
+	addi	t3, t3, 1
+	b	loop_height
+
+next_width:
+	addi	t2, t2, 1
+	b	loop_width	
+
+end_loop:
+	ret
+
+val_zero:
+	li	s9, 0
+	b	store
+
+
+##### mandlebrot
+mandelbrot:
+	li	s8, 0		# s8 = z real part
+	li	s9, 0		# s9 = z imaginary part
+	li	s10, 0		# s10 = n
+	li	s11, MAX_ITER
+	
+mloop:
+	# s4 = abs(z)	where z = s8 + s9 * i
+	mv	t4, s8
+	mv	t5, s9
+	
+	mul	t4, t4, t4
+	mul	t5, t5, t5
+	add	s4, t4, t5
+	
+	li	t4, 4	
+	bgt	s4, t4, end_mloop
+	li	t4, MAX_ITER
+	bge	s4, t4, end_mloop
+	
+	# z = z*z + c
+	# s8 = s8^2 - s9^2 + s6
+	mv	t4, s8		# save s8 for counting new s9
+	mul	s8, s8, s8
+	mul	t5, s9, s9
+	sub	s8, s8, t5
+	add	s8, s8, s6
+
+	# s9 = 2 * s8 * s9 + s7
+	li	t5, 2
+	mul	s9, s9, t5
+	mul	s9, s9, t4
+	add	s9, s9, s7
+	
+	# n += 1
+	addi	s10, s10, 1
+	b mloop	
+
+end_mloop:
 	ret
 
 
