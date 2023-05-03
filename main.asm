@@ -12,6 +12,8 @@ hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
+stored:	.asciz	"\nStored pixel\n"
+
 	.text
 
 main:
@@ -73,6 +75,10 @@ store:
 	addi	t0, t0, 1
 	bge	t0, t6, end_loop
 	sb	s8, (t0)
+	
+	li	a7, INSTR
+	la 	a0, stored
+	ecall
 
 	addi	t0, t0, 1
 	
