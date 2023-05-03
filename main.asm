@@ -27,12 +27,12 @@ main:
 start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
-	
-	li	t2, 0		# t2 = width iterator
+
+	mv	t3, s2		# t3 = height iterator	
 loop_height:
+	li	t2, 0		# t2 = width iterator
 	beqz	t3, end_loop
 	
-	mv	t3, s2		# t3 = height iterator
 loop_width:
 	bge	t2, s1, next_height
 	
