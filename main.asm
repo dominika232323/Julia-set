@@ -39,8 +39,9 @@ loop_width:
 	li	t3, 0
 loop_height:
 	bge	t0, t6, end_loop
+	beq	t3, s2, next_width
 	
-	# complex number real part = (RE_START + (x / WIDTH) * (RE_END - RE_START)
+	# complex number real part = RE_START + (x / WIDTH) * (RE_END - RE_START)
 	div	s6, t2, s1
 	li	s8, RE_START	
 	li	s9, RE_END
@@ -56,7 +57,7 @@ loop_height:
 	mul	s7, s7, s9
 	add	s7, s7, s8	# s7 = complex number imaginary part
 	
-	mv	a0, s6
+	mv	a0, t2
 	li	a7, 1
 	ecall
 	
@@ -64,7 +65,7 @@ loop_height:
 	li	a7, INSTR
 	ecall
 	
-	mv	a0, s7
+	mv	a0, t3
 	li	a7, 1
 	ecall
 	
@@ -98,7 +99,6 @@ store:
 
 	addi	t0, t0, 1
 	
-	beq	t3, s2, next_width
 	addi	t3, t3, 1
 	b	loop_height
 
