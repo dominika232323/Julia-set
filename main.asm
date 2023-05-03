@@ -26,13 +26,13 @@ start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
 	
-	li	t2, 0
-loop_width:
-	bge	t2, s1, end_loop
-	
-	mv	t3, s2
+	li	t2, 0		# t2 = width iterator
 loop_height:
-	beqz	t3, next_width
+	beqz	t3, end_loop
+	
+	mv	t3, s2		# t3 = height iterator
+loop_width:
+	bge	t2, s1, next_height
 	
 	# complex number real part = RE_START + (x / WIDTH) * (RE_END - RE_START)
 	div	s6, t2, s1
@@ -76,12 +76,12 @@ store:
 
 	addi	t0, t0, 1
 	
-	addi	t3, t3, 1
-	b	loop_height
-
-next_width:
 	addi	t2, t2, 1
 	b	loop_width
+
+next_height:
+	addi	t3, t3, -1
+	b	loop_height
 
 val_zero:
 	li	s9, 0
