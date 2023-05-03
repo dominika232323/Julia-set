@@ -12,6 +12,11 @@ hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
+enter:	.asciz	"\n"
+space:	.asciz	"   "
+s6val:	.asciz	"\ns6:"	
+s7val:	.asciz	"\ns7:"	
+
 	.text
 
 main:
@@ -36,21 +41,69 @@ loop_height:
 	bge	t0, t6, end_loop
 	
 	# complex number real part = (RE_START + (x / WIDTH) * (RE_END - RE_START)
+	li	a7, INSTR
+	la 	a0, s6val
+	ecall
+	
 	div	s6, t2, s1
 	li	s8, RE_START
 	add	s6, s6, s8
+	
+	mv 	a0, s6
+	li	a7, 1
+	ecall
+	li	a7, INSTR
+	la 	a0, space
+	ecall
+	li	a7, INSTR
+	la 	a0, enter
+	ecall
+	
 	li	s9, RE_END
 	sub	s9, s9, s8
 	mul	s6, s6, s9	# s6 = complex number real part
+	
+	
 
 	# complex number imaginary part = IM_START + (y / HEIGHT) * (IM_END - IM_START))
+	li	a7, INSTR
+	la 	a0, s7val
+	ecall
+	
 	div	s7, t3, s2
 	li	s8, IM_START
 	add	s7, s7, s8
+	
+	mv 	a0, s7
+	li	a7, 1
+	ecall
+	li	a7, INSTR
+	la 	a0, space
+	ecall
+	li	a7, INSTR
+	la 	a0, enter
+	ecall
+	
 	li	s9, IM_END
 	sub	s9, s9, s8
 	mul	s7, s7, s9	# s7 = complex number imaginary part
+
+	mv 	a0, s6
+	li	a7, 1
+	ecall
 	
+	li	a7, INSTR
+	la 	a0, space
+	ecall
+	
+	mv 	a0, s7
+	li	a7, 1
+	ecall
+	
+	li	a7, INSTR
+	la 	a0, enter
+	ecall
+			
 	jal	mandelbrot
 	
 	# hue = int(255 * m / MAX_ITER)
