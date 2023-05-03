@@ -12,11 +12,6 @@ hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
-enter:	.asciz	"\n"
-space:	.asciz	"   "
-s6val:	.asciz	"\ns6:"	
-s7val:	.asciz	"\ns7:"	
-
 	.text
 
 main:
@@ -34,11 +29,9 @@ start_table_iterator:
 	li	t2, 0
 loop_width:
 	bge	t2, s1, end_loop
-	bge	t0, t6, end_loop
 	
 	li	t3, 0
 loop_height:
-	bge	t0, t6, end_loop
 	beq	t3, s2, next_width
 	
 	# complex number real part = RE_START + (x / WIDTH) * (RE_END - RE_START)
@@ -57,31 +50,7 @@ loop_height:
 	mul	s7, s7, s9
 	add	s7, s7, s8	# s7 = complex number imaginary part
 	
-	mv	a0, s6
-	li	a7, 1
-	ecall
-	
-	la	a0, space
-	li	a7, INSTR
-	ecall
-	
-	mv	a0, s7
-	li	a7, 1
-	ecall
-	
-	la	a0, enter
-	li	a7, INSTR
-	ecall
-	
 	jal	mandelbrot
-	
-	mv	a0, s10
-	li	a7, 1
-	ecall
-	
-	la	a0, enter
-	li	a7, INSTR
-	ecall
 	
 	# hue = int(255 * m / MAX_ITER)
 	li	t4, 255
@@ -93,8 +62,8 @@ loop_height:
 	li	s9, 255
 
 store:
-	bge	t0, t6, end_loop
 	# store blue
+	bge	t0, t6, end_loop
 	sb	s9, (t0)
 	# store green
 	addi	t0, t0, 1
