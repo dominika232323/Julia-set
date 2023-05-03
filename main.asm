@@ -97,7 +97,7 @@ store:
 	bge	t0, t6, end_loop
 	sb	s8, (t0)
 
-	addi	t0, t0, 1
+	addi	t0, t0, 2
 	
 	addi	t3, t3, 1
 	b	loop_height
