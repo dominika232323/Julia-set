@@ -30,9 +30,9 @@ start_table_iterator:
 loop_width:
 	bge	t2, s1, end_loop
 	
-	li	t3, 0
+	mv	t3, s2
 loop_height:
-	beq	t3, s2, next_width
+	beqz	t3, next_width
 	
 	# complex number real part = RE_START + (x / WIDTH) * (RE_END - RE_START)
 	div	s6, t2, s1
