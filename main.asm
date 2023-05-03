@@ -105,7 +105,7 @@ store:
 	bge	t0, t6, end_loop
 	sb	s8, (t0)
 
-	addi	t0, t0, 2
+	addi	t0, t0, 1
 	
 	addi	t3, t3, 1
 	b	loop_height
@@ -202,6 +202,7 @@ mandelbrot:
 	
 mloop:
 	# s4 = abs(z)^2		where z = s8 + s9 * i
+	# s4 = s8^2 + s9^2
 	mv	t4, s8
 	mv	t5, s9
 	
@@ -216,7 +217,7 @@ mloop:
 	
 	# z = z*z + c
 	# s8 = s8^2 - s9^2 + s6
-	mv	t4, s8		# save s8 for counting new s9
+	mv	t4, s8		# save old s8 for counting new s9
 	mul	s8, s8, s8
 	mul	t5, s9, s9
 	sub	s8, s8, t5
