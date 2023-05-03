@@ -6,8 +6,8 @@
 	
 	.data
 	
-input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/small.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/smallAfter.bmp"
+input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
@@ -57,7 +57,7 @@ loop_height:
 	mul	s7, s7, s9
 	add	s7, s7, s8	# s7 = complex number imaginary part
 	
-	mv	a0, t2
+	mv	a0, s6
 	li	a7, 1
 	ecall
 	
@@ -65,7 +65,7 @@ loop_height:
 	li	a7, INSTR
 	ecall
 	
-	mv	a0, t3
+	mv	a0, s7
 	li	a7, 1
 	ecall
 	
@@ -74,6 +74,14 @@ loop_height:
 	ecall
 	
 	jal	mandelbrot
+	
+	mv	a0, s10
+	li	a7, 1
+	ecall
+	
+	la	a0, enter
+	li	a7, INSTR
+	ecall
 	
 	# hue = int(255 * m / MAX_ITER)
 	li	t4, 255
@@ -193,7 +201,7 @@ mandelbrot:
 	li	s11, MAX_ITER
 	
 mloop:
-	# s4 = abs(z)	where z = s8 + s9 * i
+	# s4 = abs(z)^2		where z = s8 + s9 * i
 	mv	t4, s8
 	mv	t5, s9
 	
