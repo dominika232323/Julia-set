@@ -55,7 +55,23 @@ loop_height:
 	sub	s9, s9, s8
 	mul	s7, s7, s9
 	add	s7, s7, s8	# s7 = complex number imaginary part
-			
+	
+	mv	a0, s6
+	li	a7, 1
+	ecall
+	
+	la	a0, space
+	li	a7, INSTR
+	ecall
+	
+	mv	a0, s7
+	li	a7, 1
+	ecall
+	
+	la	a0, enter
+	li	a7, INSTR
+	ecall
+	
 	jal	mandelbrot
 	
 	# hue = int(255 * m / MAX_ITER)
