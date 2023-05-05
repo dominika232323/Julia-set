@@ -6,8 +6,8 @@
 	
 	.data
 	
-input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
+input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/color.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/colorAfter.bmp"
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
@@ -22,6 +22,14 @@ main:
 	ecall	
 	
 	jal	open_bmp_file
+
+##### count padding
+padding:
+	# padding: s4 = (4 - (width % 4)) % 4
+	li	t4, 4
+	remu	s4, s1, t4
+	sub	s4, t4, s4
+	remu	s4, s4, t4
 
 ##### mandelbrot set generator
 start_table_iterator:
@@ -87,7 +95,13 @@ store:
 
 next_height:
 	addi	t3, t3, -1
-	b	loop_height
+	mv	t4, s4
+		
+skip_padding:
+	beqz	t4, loop_height
+	addi	t0, t0, 1
+	addi	t4, t4, -1
+	b	skip_padding
 
 val_zero:
 	li	s9, 0
@@ -173,22 +187,21 @@ mandelbrot:
 	li	s8, 0		# s8 = z real part
 	li	s9, 0		# s9 = z imaginary part
 	li	s10, 0		# s10 = n
-	li	s11, MAX_ITER
 	
 mloop:
-	# s4 = abs(z)^2		where z = s8 + s9 * i
-	# s4 = s8^2 + s9^2
+	# s11 = abs(z)^2		where z = s8 + s9 * i
+	# s11 = s8^2 + s9^2
 	mv	t4, s8
 	mv	t5, s9
 	
 	mul	t4, t4, t4
 	mul	t5, t5, t5
-	add	s4, t4, t5
+	add	s11, t4, t5
 	
 	li	t4, 4	
-	bgt	s4, t4, end_mloop
+	bgt	s11, t4, end_mloop
 	li	t4, MAX_ITER
-	bge	s4, t4, end_mloop
+	bge	s11, t4, end_mloop
 	
 	# z = z*z + c
 	# s8 = s8^2 - s9^2 + s6
