@@ -45,20 +45,38 @@ loop_width:
 	bge	t2, s1, next_height
 	
 	# complex number real part = RE_START + (x / WIDTH) * (RE_END - RE_START)
+	slli	t2, t2, 4
 	div	s6, t2, s1
-	li	s8, RE_START	
+	srai	t2, t2, 4
+	
+	li	s8, RE_START
+	slli	s8, s8, 4
 	li	s9, RE_END
+	slli	s9, s9, 4
 	sub	s9, s9, s8
+	
 	mul	s6, s6, s9
+	
+	slli	s8, s8, 4
 	add	s6, s6, s8	# s6 = complex number real part
+#	srai	s6, s6, 8
 	
 	# complex number imaginary part = IM_START + (y / HEIGHT) * (IM_END - IM_START))
+	slli	t3, t3, 4
 	div	s7, t3, s2
+	srai	t3, t3, 4
+	
 	li	s8, IM_START
+	slli	s8, s8, 4
 	li	s9, IM_END
+	slli	s8, s8, 4
 	sub	s9, s9, s8
+	
 	mul	s7, s7, s9
+	
+	slli	s8, s8, 4
 	add	s7, s7, s8	# s7 = complex number imaginary part
+#	srai	s7, s7, 8
 	
 	jal	mandelbrot
 	
@@ -192,30 +210,49 @@ mloop:
 	# s11 = abs(z)^2		where z = s8 + s9 * i
 	# s11 = s8^2 + s9^2
 	mv	t4, s8
+	slli	t4, t4, 4
 	mv	t5, s9
+	slli	t5, t5, 4
 	
 	mul	t4, t4, t4
 	mul	t5, t5, t5
 	add	s11, t4, t5
 	
+	# do mloop while abs(z) <= 2 and n < MAX_ITER
 	li	t4, 4	
+	slli	t4, t4, 8
 	bgt	s11, t4, end_mloop
+	
 	li	t4, MAX_ITER
-	bge	s11, t4, end_mloop
+	bge	s10, t4, end_mloop
 	
 	# z = z*z + c
 	# s8 = s8^2 - s9^2 + s6
 	mv	t4, s8		# save old s8 for counting new s9
+	
+	slli	s8, s8, 4
 	mul	s8, s8, s8
+	
+	slli	s9, s9, 4
 	mul	t5, s9, s9
+	
 	sub	s8, s8, t5
 	add	s8, s8, s6
+	
+	srai	s8, s8, 8
 
 	# s9 = 2 * s8 * s9 + s7
 	li	t5, 2
+	slli	t5, t5, 4
+	slli	t4, t4, 4
+	
 	mul	s9, s9, t5
 	mul	s9, s9, t4
+	
+	srai	s9, s9, 4
 	add	s9, s9, s7
+	
+	srai	s9, s9, 8
 	
 	# n += 1
 	addi	s10, s10, 1
