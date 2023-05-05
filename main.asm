@@ -6,8 +6,8 @@
 	
 	.data
 	
-input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
+input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/color.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/colorAfter.bmp"
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
@@ -26,10 +26,11 @@ main:
 ##### count padding
 padding:
 	# padding: s4 = (4 - (width % 4)) % 4
-	li	t4, 4
-	remu	s4, s1, t4
-	sub	s4, t4, s4
-	remu	s4, s4, t4
+	li	t4, 3
+	and	s4, s1, t4
+	li	t3, 4
+	sub	s4, t3, s4
+	and	s4, s4, t4
 
 ##### mandelbrot set generator
 start_table_iterator:
@@ -99,10 +100,6 @@ store:
 	addi	t0, t0, 1
 	bge	t0, t6, end_loop
 	sb	s8, (t0)
-	
-	li	a7, INSTR
-	la 	a0, stored
-	ecall
 
 	addi	t0, t0, 1
 	
