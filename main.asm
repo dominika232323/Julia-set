@@ -80,23 +80,21 @@ loop_width:
 	
 	jal	mandelbrot
 	
-	# hue = int(255 * m / MAX_ITER)
+	# grey scale color
+	# color = 255 - int(m * 255 / MAX_ITER)
 	li	t4, 255
 	mul	s8, s10, t4
-	div	s8, s8, s11		# s8 = hue
-	
-	# value = 255 if m < MAX_ITER else 0
-	bge	s10, s11, val_zero
-	li	s9, 255
+	div	s8, s8, s11
+	sub	s8, t4, s8
 
 store:
 	# store blue
 	bge	t0, t6, end_loop
-	sb	s9, (t0)
+	sb	s8, (t0)
 	# store green
 	addi	t0, t0, 1
 	bge	t0, t6, end_loop
-	sb	t4, (t0)
+	sb	s8, (t0)
 	# store red
 	addi	t0, t0, 1
 	bge	t0, t6, end_loop
@@ -120,10 +118,6 @@ skip_padding:
 	addi	t0, t0, 1
 	addi	t4, t4, -1
 	b	skip_padding
-
-val_zero:
-	li	s9, 0
-	b	store	
 
 end_loop:
 	jal 	open_dest_file
