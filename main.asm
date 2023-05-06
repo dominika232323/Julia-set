@@ -13,12 +13,14 @@ bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
 stored:	.asciz	"\nStored pixel\n"
+space:	.asciz	"       "
+enter:	.asciz	"\n"
 
 	.text
 
 main:
-	li	a7, INSTR
 	la 	a0, hello
+	li	a7, INSTR
 	ecall	
 	
 	jal	open_bmp_file
@@ -79,9 +81,31 @@ loop_width:
 	add	s7, s7, s8		# s7 - 2^8
 #	srai	s7, s7, 8
 	
-	li s6, 190
-	li s7, 190
+	mv	a0, s6
+	li	a7, 1
+	ecall
+
+	la	a0, space
+	li	a7, INSTR
+	ecall
+
+	mv	a0, s7
+	li	a7, 1
+	ecall
+
+	la	a0, enter
+	li	a7, INSTR
+	ecall
+	
 	jal	mandelbrot
+	
+	mv	a0, s10
+	li	a7, 1
+	ecall
+
+	la	a0, enter
+	li	a7, INSTR
+	ecall
 	
 	# grey scale color
 	# color = 255 - int(m * 255 / MAX_ITER)
@@ -95,6 +119,14 @@ loop_width:
 	slli	t4, t4, 4		# t4 - 2^8
 	sub	s8, t4, s8		# s8 - 2^8
 	srai	s8, s8, 8		# s8 - 2^0
+	
+	mv	a0, s8
+	li	a7, 1
+	ecall
+
+	la	a0, enter
+	li	a7, INSTR
+	ecall
 
 store:
 	# store blue
@@ -108,6 +140,10 @@ store:
 	addi	t0, t0, 1
 	bge	t0, t6, end_loop
 	sb	s8, (t0)
+
+	la 	a0, stored
+	li	a7, INSTR
+	ecall
 
 	addi	t0, t0, 1
 	
