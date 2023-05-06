@@ -20,7 +20,7 @@ enter:	.asciz	"\n"
 
 main:
 	la 	a0, hello
-	li	a7, INSTR
+	li	a7, PSTR
 	ecall	
 	
 	jal	open_bmp_file
@@ -86,15 +86,15 @@ loop_width:
 	ecall
 
 	la	a0, space
-	li	a7, INSTR
+	li	a7, PSTR
 	ecall
 
 	mv	a0, s7
-	li	a7, 1
+	li	a7, PINT
 	ecall
 
 	la	a0, enter
-	li	a7, INSTR
+	li	a7, PSTR
 	ecall
 	
 	jal	mandelbrot
@@ -104,7 +104,7 @@ loop_width:
 	ecall
 
 	la	a0, enter
-	li	a7, INSTR
+	li	a7, PSTR
 	ecall
 	
 	# grey scale color
@@ -125,7 +125,7 @@ loop_width:
 	ecall
 
 	la	a0, enter
-	li	a7, INSTR
+	li	a7, PSTR
 	ecall
 
 store:
@@ -142,7 +142,7 @@ store:
 	sb	s8, (t0)
 
 	la 	a0, stored
-	li	a7, INSTR
+	li	a7, PSTR
 	ecall
 
 	addi	t0, t0, 1
@@ -163,7 +163,7 @@ skip_padding:
 end_loop:
 	jal 	open_dest_file
 
-	li	a7, INSTR
+	li	a7, PSTR
 	la 	a0, bye
 	ecall
 	
@@ -225,7 +225,7 @@ close_source_file:
 	ret
 
 open_bmp_error:
-	li	a7, INSTR
+	li	a7, PSTR
 	la 	a0, error
 	ecall
 	

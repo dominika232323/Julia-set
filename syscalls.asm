@@ -1,8 +1,9 @@
-# input
-	.eqv	INSTR 4
+# print
+	.eqv	PSTR 4
+	.eqv	PINT 1
 	
-# output
-	.eqv	OUTSTR 8
+# read
+	.eqv	RSTR 8
 	
 # bmp files
 	.eqv	OPEN 1024
