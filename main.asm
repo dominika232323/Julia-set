@@ -6,8 +6,8 @@
 	
 	.data
 	
-input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
+input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/color.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/colorAfter.bmp"
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
@@ -79,6 +79,8 @@ loop_width:
 	add	s7, s7, s8		# s7 - 2^8
 #	srai	s7, s7, 8
 	
+	li s6, 190
+	li s7, 190
 	jal	mandelbrot
 	
 	# grey scale color
@@ -88,8 +90,8 @@ loop_width:
 	slli	t4, t4, 4		# t4 - 2^4
 	slli	s10, s10, 4		# s10 - 2^4
 	mul	s8, s10, t4		# s8 - 2^8
-	
-	div	s8, s8, s11		# s8 - 2^8
+	li	t5, MAX_ITER
+	div	s8, s8, t5		# s8 - 2^8
 	slli	t4, t4, 4		# t4 - 2^8
 	sub	s8, t4, s8		# s8 - 2^8
 	srai	s8, s8, 8		# s8 - 2^0
