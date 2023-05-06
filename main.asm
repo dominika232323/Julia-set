@@ -49,37 +49,35 @@ loop_width:
 	
 	# complex number real part
 	# s6 = RE_START + (x / WIDTH) * (RE_END - RE_START)
-	slli	t2, t2, 4		# t2 - 2^4
-	div	s6, t2, s1		# s6 - 2^4
-	srai	t2, t2, 4		# t2 - 2^0
+	slli	t2, t2, 8		# t2 - 2^8
+	div	s6, t2, s1		# s6 - 2^8
+	srai	t2, t2, 8		# t2 - 2^0
 	
 	li	s8, RE_START
 	li	s9, RE_END
 	sub	s9, s9, s8		# s9 - 2^0
 	
-	slli	s9, s9, 4		# s9 - 2^4
-	mul	s6, s6, s9		# s6 - 2^8
+	slli	s9, s9, 8		# s9 - 2^8
+	mul	s6, s6, s9		# s6 - 2^16
 	
-	slli	s8, s8, 8		# s8 - 2^8
-	add	s6, s6, s8		# s6 - 2^8
-#	srai	s6, s6, 8
+	slli	s8, s8, 16		# s8 - 2^16
+	add	s6, s6, s8		# s6 - 2^16
 	
 	# complex number imaginary part
 	# s7 = IM_START + (y / HEIGHT) * (IM_END - IM_START))
-	slli	t3, t3, 4		# t3 - 2^4
-	div	s7, t3, s2		# s7 - 2^4
-	srai	t3, t3, 4		# t3 - 2^0
+	slli	t3, t3, 8		# t3 - 2^8
+	div	s7, t3, s2		# s7 - 2^8
+	srai	t3, t3, 8		# t3 - 2^0
 	
 	li	s8, IM_START
 	li	s9, IM_END
 	sub	s9, s9, s8		# s9 - 2^0
 	
-	slli	s9, s9, 4		# s9 - 2^4
-	mul	s7, s7, s9		# s7 - 2^8
+	slli	s9, s9, 8		# s9 - 2^8
+	mul	s7, s7, s9		# s7 - 2^16
 	
-	slli	s8, s8, 8		# s8 - 2^8
-	add	s7, s7, s8		# s7 - 2^8
-#	srai	s7, s7, 8
+	slli	s8, s8, 16		# s8 - 2^16
+	add	s7, s7, s8		# s7 - 2^16
 	
 	mv	a0, s6
 	li	a7, 1
@@ -111,14 +109,16 @@ loop_width:
 	# color = 255 - int(m * 255 / MAX_ITER)
 	li	t4, 255
 	
-	slli	t4, t4, 4		# t4 - 2^4
-	slli	s10, s10, 4		# s10 - 2^4
-	mul	s8, s10, t4		# s8 - 2^8
+	slli	t4, t4, 8		# t4 - 2^8
+	slli	s10, s10, 8		# s10 - 2^8
+	mul	s8, s10, t4		# s8 - 2^16
+	
 	li	t5, MAX_ITER
-	div	s8, s8, t5		# s8 - 2^8
-	slli	t4, t4, 4		# t4 - 2^8
-	sub	s8, t4, s8		# s8 - 2^8
-	srai	s8, s8, 8		# s8 - 2^0
+	div	s8, s8, t5		# s8 - 2^16
+	
+	slli	t4, t4, 8		# t4 - 2^16
+	sub	s8, t4, s8		# s8 - 2^18
+	srai	s8, s8, 16		# s8 - 2^0
 	
 	mv	a0, s8
 	li	a7, 1
@@ -245,17 +245,17 @@ mloop:
 	# s11 = abs(z)^2		where z = s8 + s9 * i
 	# s11 = s8^2 + s9^2
 	mv	t4, s8
-	slli	t4, t4, 4		# t4 - 2^4
+	slli	t4, t4, 8		# t4 - 2^8
 	mv	t5, s9
-	slli	t5, t5, 4		# t5 - 2^4
+	slli	t5, t5, 8		# t5 - 2^8
 	
-	mul	t4, t4, t4		# t4 - 2^8
-	mul	t5, t5, t5		# t5 - 2^8
-	add	s11, t4, t5		# s11 - s^8
+	mul	t4, t4, t4		# t4 - 2^16
+	mul	t5, t5, t5		# t5 - 2^16
+	add	s11, t4, t5		# s11 - s^16
 	
 	# do mloop while abs(z) <= 2 and n < MAX_ITER
 	li	t4, 4	
-	slli	t4, t4, 8		# t4 - 2^8
+	slli	t4, t4, 16		# t4 - 2^16
 	bgt	s11, t4, end_mloop
 	
 	li	t4, MAX_ITER
@@ -265,27 +265,27 @@ mloop:
 	# s8 = s8^2 - s9^2 + s6
 	mv	t4, s8		# save old s8 for counting new s9
 	
-	slli	s8, s8, 4		# s8 - 2^4
-	mul	s8, s8, s8		# s8 - 2^8
+	slli	s8, s8, 8		# s8 - 2^8
+	mul	s8, s8, s8		# s8 - 2^16
 	
-	slli	s9, s9, 4		# s9 - 2^4
-	mul	t5, s9, s9		# t5 - 2^8
+	slli	s9, s9, 8		# s9 - 2^8
+	mul	t5, s9, s9		# t5 - 2^16
 	
-	sub	s8, s8, t5		# s8 - 2^8
-	add	s8, s8, s6		# s8 - 2^8
+	sub	s8, s8, t5		# s8 - 2^16
+	add	s8, s8, s6		# s8 - 2^16
 	
-	srai	s8, s8, 8		# s8 - 2^0
+	srai	s8, s8, 16		# s8 - 2^0
 
 	# s9 = 2 * s8 * s9 + s7
 	li	t5, 2
-	slli	t5, t5, 4		# t5 - 2^4
-	slli	t4, t4, 4		# t4 - 2^4
+	slli	t5, t5, 8		# t5 - 2^8
+	slli	t4, t4, 8		# t4 - 2^8
 	
-	mul	s9, s9, t5		# s9 - 2^8
-	mul	s9, s9, t4		# s9 - 2^12
+	mul	s9, s9, t5		# s9 - 2^16
+	mul	s9, s9, t4		# s9 - 2^24
 	
-	srai	s9, s9, 4		# s9 - 2^8
-	add	s9, s9, s7		# s9 - 2^8
+	srai	s9, s9, 8		# s9 - 2^16
+	add	s9, s9, s7		# s9 - 2^16
 	
 	srai	s9, s9, 8		# s9 - 2^0
 	
