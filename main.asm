@@ -12,10 +12,6 @@ hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
 error:	.asciz	"\nCould not open file\n"
 
-stored:	.asciz	"\nStored pixel\n"
-space:	.asciz	"       "
-enter:	.asciz	"\n"
-
 	.text
 
 main:
@@ -79,32 +75,8 @@ loop_width:
 	slli	s8, s8, 16		# s8 - 2^16
 	add	s7, s7, s8		# s7 - 2^16
 	
-	mv	a0, s6
-	li	a7, 1
-	ecall
-
-	la	a0, space
-	li	a7, PSTR
-	ecall
-
-	mv	a0, s7
-	li	a7, PINT
-	ecall
-
-	la	a0, enter
-	li	a7, PSTR
-	ecall
-	
 	jal	mandelbrot
-	
-	mv	a0, s10
-	li	a7, 1
-	ecall
-
-	la	a0, enter
-	li	a7, PSTR
-	ecall
-	
+		
 	# grey scale color
 	# color = 255 - int(m * 255 / MAX_ITER)
 	li	t4, 255
@@ -117,16 +89,8 @@ loop_width:
 	div	s8, s8, t5		# s8 - 2^16
 	
 	slli	t4, t4, 8		# t4 - 2^16
-	sub	s8, t4, s8		# s8 - 2^18
+	sub	s8, t4, s8		# s8 - 2^16
 	srai	s8, s8, 16		# s8 - 2^0
-	
-	mv	a0, s8
-	li	a7, 1
-	ecall
-
-	la	a0, enter
-	li	a7, PSTR
-	ecall
 
 store:
 	# store blue
@@ -140,10 +104,6 @@ store:
 	addi	t0, t0, 1
 	bge	t0, t6, end_loop
 	sb	s8, (t0)
-
-	la 	a0, stored
-	li	a7, PSTR
-	ecall
 
 	addi	t0, t0, 1
 	
