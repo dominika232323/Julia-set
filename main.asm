@@ -8,8 +8,10 @@
 	
 input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
 output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
+
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
+
 error:	.asciz	"\nCould not open file\n"
 
 	.text
@@ -24,7 +26,7 @@ main:
 ##### count padding
 padding:
 	# padding: s4 = (4 - (width % 4)) % 4
-	li	t4, 3
+	li	t4, 3		# bit mask = 4 - 1 = 3
 	and	s4, s1, t4
 	li	t3, 4
 	sub	s4, t3, s4
@@ -35,16 +37,17 @@ start_table_iterator:
 	mv	t0, s5		# t0 = start -> iterator
 	add	t6, s5, s3	# t6 = start + size -> end
 
-	mv	t3, s2		# t3 = height iterator	
+	mv	t3, s2		
+	addi	t3, t3, -1	# t3 = height iterator
 loop_height:
 	li	t2, 0		# t2 = width iterator
-	beqz	t3, end_loop
+	bltz	t3, end_loop
 	
 loop_width:
 	bge	t2, s1, next_height
 	
 	# complex number real part
-	# s6 = RE_START + (x / WIDTH) * (RE_END - RE_START)
+	# s6 = (x / WIDTH) * (RE_END - RE_START) + RE_START
 	slli	t2, t2, 8		# t2 - 2^8
 	div	s6, t2, s1		# s6 - 2^8
 	srai	t2, t2, 8		# t2 - 2^0
@@ -60,7 +63,7 @@ loop_width:
 	add	s6, s6, s8		# s6 - 2^16
 	
 	# complex number imaginary part
-	# s7 = IM_START + (y / HEIGHT) * (IM_END - IM_START))
+	# s7 = (y / HEIGHT) * (IM_END - IM_START) + IM_START
 	slli	t3, t3, 8		# t3 - 2^8
 	div	s7, t3, s2		# s7 - 2^8
 	srai	t3, t3, 8		# t3 - 2^0
