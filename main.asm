@@ -48,9 +48,11 @@ loop_width:
 	
 	# complex number real part
 	# s6 = (x / WIDTH) * (RE_END - RE_START) + RE_START
-	slli	t2, t2, 8		# t2 - 2^8
+	slli	t2, t2, 16		# t2 - 2^16
+	slli	s1, s1, 8		# s1 - 2^8
 	div	s6, t2, s1		# s6 - 2^8
-	srai	t2, t2, 8		# t2 - 2^0
+	srai	t2, t2, 16		# t2 - 2^0
+	srai	s1, s1, 8		# s1 - 2^0
 	
 	li	s8, RE_START
 	li	s9, RE_END
@@ -64,9 +66,11 @@ loop_width:
 	
 	# complex number imaginary part
 	# s7 = (y / HEIGHT) * (IM_END - IM_START) + IM_START
-	slli	t3, t3, 8		# t3 - 2^8
+	slli	t3, t3, 16		# t3 - 2^16
+	slli	s2, s2, 8		# s2 - 2^8
 	div	s7, t3, s2		# s7 - 2^8
-	srai	t3, t3, 8		# t3 - 2^0
+	srai	t3, t3, 16		# t3 - 2^0
+	srai	s2, s2, 8		# s2 - 2^0
 	
 	li	s8, IM_START
 	li	s9, IM_END
