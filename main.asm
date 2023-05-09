@@ -6,8 +6,8 @@
 	
 	.data
 	
-input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
+input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/crows.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/crowsAfter.bmp"
 
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
