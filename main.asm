@@ -6,8 +6,8 @@
 	
 	.data
 	
-input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/crows.bmp"
-output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/crowsAfter.bmp"
+input: 	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lena.bmp"
+output:	.asciz  "/Users/domin/Desktop/studia/sem2_23L/ARKO/RISC V/Julia-set/lenaAfter.bmp"
 
 hello:	.asciz	"\nWelcome to Mandelbrot set generator!\n"
 bye:	.asciz	"\nMandelbrot set was generated. Have a good day!"
@@ -201,14 +201,14 @@ mandelbrot:
 	li	s9, 0		# s9 = z imaginary part
 	li	s10, 0		# s10 = n
 	
-	slli	s8, s8, 16		# s8 - 2^16		s8 << FRACTION_BITS (=16)
-	slli	s9, s9, 16		# s9 - 2^16		s9 << FRACTION_BITS (=16)
+	slli	s8, s8, 8		# s8 - 2^8
+	slli	s9, s9, 8		# s9 - 2^8
 	
 mloop:
 	# s11 = abs(z)^2		where z = s8 + s9 * i
 	# s11 = s8^2 + s9^2
-	mv	t4, s8			# t4 - 2^16
-	mv	t5, s9			# t5 - 2^16
+	mv	t4, s8			# t4 - 2^8
+	mv	t5, s9			# t5 - 2^8
 	
 	mul	t4, t4, t4		# t4 - 2^16
 	mul	t5, t5, t5		# t5 - 2^16
@@ -226,21 +226,15 @@ mloop:
 	# s8 = s8^2 - s9^2 + s6
 	mv	t4, s8		# save old s8 for counting new s9
 	
-	slli	s8, s8, 8		# s8 - 2^8
 	mul	s8, s8, s8		# s8 - 2^16
-	
-	slli	s9, s9, 8		# s9 - 2^8
 	mul	t5, s9, s9		# t5 - 2^16
 	
 	sub	s8, s8, t5		# s8 - 2^16
 	add	s8, s8, s6		# s8 - 2^16
-	
-	srai	s8, s8, 16		# s8 - 2^0
 
 	# s9 = 2 * s8 * s9 + s7
 	li	t5, 2
 	slli	t5, t5, 8		# t5 - 2^8
-	slli	t4, t4, 8		# t4 - 2^8
 	
 	mul	s9, s9, t5		# s9 - 2^16
 	mul	s9, s9, t4		# s9 - 2^24
@@ -248,7 +242,8 @@ mloop:
 	srai	s9, s9, 8		# s9 - 2^16
 	add	s9, s9, s7		# s9 - 2^16
 	
-	srai	s9, s9, 8		# s9 - 2^0
+	srai	s9, s9, 8		# s9 - 2^8
+	srai	s8, s8, 8		# s8 - 2^8
 	
 	# n += 1
 	addi	s10, s10, 1
