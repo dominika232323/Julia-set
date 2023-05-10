@@ -48,9 +48,9 @@ loop_width:
 	
 	# complex number real part
 	# s6 = (x / WIDTH) * (RE_END - RE_START) + RE_START
-	slli	t2, t2, 16		# t2 - 2^16		t2 << FRACTION_BITS (=16)
+	slli	t2, t2, 16		# t2 - 2^16
 	div	s6, t2, s1		# s6 - 2^16
-	srai	t2, t2, 16		# t2 - 2^0		t2 >> FRACTION_BITS (=16)
+	srai	t2, t2, 16		# t2 - 2^0
 	
 	li	s8, RE_START
 	li	s9, RE_END
@@ -58,14 +58,14 @@ loop_width:
 	
 	mul	s6, s6, s9		# s6 - 2^16
 	
-	slli	s8, s8, 16		# s8 - 2^16		s8 << FRACTION_BITS (=16)
+	slli	s8, s8, 16		# s8 - 2^16
 	add	s6, s6, s8		# s6 - 2^16
 	
 	# complex number imaginary part
 	# s7 = (y / HEIGHT) * (IM_END - IM_START) + IM_START
-	slli	t3, t3, 16		# t3 - 2^16		t3 << FRACTION_BITS (=16)
+	slli	t3, t3, 16		# t3 - 2^16
 	div	s7, t3, s2		# s7 - 2^16
-	srai	t3, t3, 16		# t3 - 2^0		t3 >> FRACTION_BITS (=16)
+	srai	t3, t3, 16		# t3 - 2^0
 	
 	li	s8, IM_START
 	li	s9, IM_END
@@ -73,7 +73,7 @@ loop_width:
 	
 	mul	s7, s7, s9		# s7 - 2^16
 	
-	slli	s8, s8, 16		# s8 - 2^16		s8 << FRACTION_BITS (=16)
+	slli	s8, s8, 16		# s8 - 2^16
 	add	s7, s7, s8		# s7 - 2^16
 	
 	jal	mandelbrot
@@ -82,13 +82,13 @@ loop_width:
 	# color = 255 - int(m * 255 / MAX_ITER)
 	li	t4, 255
 	
-	slli	s10, s10, 16		# s10 - 2^16		s10 << FRACTION_BITS (=16)
+	slli	s10, s10, 16		# s10 - 2^16
 	mul	s8, s10, t4		# s8 - 2^16
 	
 	li	t5, MAX_ITER
 	div	s8, s8, t5		# s8 - 2^16
 	
-	srai	s8, s8, 16		# s8 - 2^0		s8 >> FRACTION_BITS (=16)
+	srai	s8, s8, 16		# s8 - 2^0
 	
 	sub	s8, t4, s8		# s8 - 2^0
 
